@@ -49,10 +49,13 @@ public class ProductsControllerTests
         Assert.Empty(products);
     }
 
-    [Fact]
-    public void Search_EmptyTerm_ReturnsAllProducts()
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("   ")]
+    public void Search_EmptyTerm_ReturnsAllProducts(string? term)
     {
-        var products = GetOkValue(_controller.Search(""));
+        var products = GetOkValue(_controller.Search(term));
 
         Assert.Equal(5, products.Count);
     }

@@ -25,8 +25,14 @@ public class ProductsController : ControllerBase
 
     // GET: api/products/search?term=lap
     [HttpGet("search")]
-    public ActionResult<List<Product>> Search(string term)
+    public ActionResult<List<Product>> Search(string? term)
     {
+        // An empty search box means "show everything"
+        if (string.IsNullOrWhiteSpace(term))
+        {
+            return Ok(Products);
+        }
+
         var result = Products
             .Where(p => p.Name.Contains(term, StringComparison.OrdinalIgnoreCase))
             .ToList();

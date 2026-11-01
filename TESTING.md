@@ -41,7 +41,7 @@ They don't start a web server or send HTTP requests.
 | Endpoint | Method | Tests check that... |
 | --- | --- | --- |
 | `GET api/products` | `GetAll` | all 5 products come back, in order |
-| `GET api/products/search?term=` | `Search` | part of a name matches (`"lap"` finds Laptop), case is ignored (`"LAP"` also works), several matches all come back, no match gives an empty list, and an empty term returns everything |
+| `GET api/products/search?term=` | `Search` | part of a name matches (`"lap"` finds Laptop), case is ignored (`"LAP"` also works), several matches all come back, no match gives an empty list, and an empty or blank search returns everything |
 | `GET api/products/category/{category}` | `GetByCategory` | `Tech` and `Office` return only their own products, and an unknown category returns an empty list |
 | `GET api/products/cheap` | `GetCheapProducts` | only products under 300 come back, sorted by price, cheapest first |
 | `GET api/products/expensive` | `GetMostExpensive` | the most expensive product (Laptop, 1200) comes back |
@@ -59,6 +59,8 @@ that returns fixed data, so the tests can run without the backend running.
 | loads and shows all products when it first renders | the app calls `GET /api/products` on start-up and lists every product |
 | searches by the typed term and shows only the results | typing `lap` and clicking **Search** calls the search endpoint and shows only the matching product |
 | shows an empty list when the search finds nothing | a search with no results clears the list |
+| encodes special characters in the search term | typing `#` sends `term=%23`, so the browser doesn't cut the URL short |
+| keeps the current list when the API returns an error | an error response (such as 400) leaves the list as it was instead of crashing the page |
 | shows every product again after clicking Show All | **Show All** loads the full list again after a search |
 
 ## How to run the tests
@@ -91,7 +93,7 @@ All the commands below are run from the root folder of this repository
 3. Read the summary at the end. You should see something like:
 
    ```
-   Passed!  - Failed: 0, Passed: 13, Skipped: 0, Total: 13
+   Passed!  - Failed: 0, Passed: 15, Skipped: 0, Total: 15
    ```
 
    If a test fails, the output shows the test name, what it expected and what it actually got.
@@ -133,7 +135,7 @@ dotnet test --filter "FullyQualifiedName~Search"
 
    ```
    Test Files  1 passed (1)
-        Tests  4 passed (4)
+        Tests  6 passed (6)
    ```
 
 To keep the tests running and re-run them every time you save a file (watch mode):
@@ -173,6 +175,9 @@ Tips:
 
 - **`Filename too long` when cloning on Windows.** Clone with long paths enabled:
   `git -c core.longpaths=true clone <repo-url>`, or clone into a shorter folder such as `C:\code`.
+- **`dotnet test` fails with "file is being used by another process" (Windows).** The API is still
+  running from `dotnet run` and has locked `Practice.Api.exe`. Stop it (`Ctrl+C` in its terminal),
+  then run the tests again.
 - **`dotnet` can't find .NET 8.** Install the .NET 8 SDK from https://dotnet.microsoft.com/download.
 - **`npm test` errors about the Node version.** Upgrade Node.js to 22.13 or newer.
 - **Changed files under `backend/Practice.Api/obj/` after running the tests.** Those are build

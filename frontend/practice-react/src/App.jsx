@@ -10,14 +10,17 @@ function App() {
 
   async function loadProducts() {
     const response = await fetch("http://localhost:5000/api/products");
+    if (!response.ok) return;
+
     const data = await response.json();
     setProducts(data);
   }
 
   async function searchProducts() {
     const response = await fetch(
-      `http://localhost:5000/api/products/search?term=${search}`
+      `http://localhost:5000/api/products/search?term=${encodeURIComponent(search)}`
     );
+    if (!response.ok) return;
 
     const data = await response.json();
     setProducts(data);
