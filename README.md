@@ -40,3 +40,18 @@ cd frontend/practice-react
 npm install
 npm run dev
 ```
+
+## Run tests
+
+```bash
+cd backend/Practice.Api.Tests
+dotnet test
+```
+
+```bash
+cd frontend/practice-react
+npm install
+npm test
+```
+
+See [TESTING.md](TESTING.md) to learn what the tests check, why they are there, and how to run them step by step.
